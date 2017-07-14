@@ -41,6 +41,18 @@ case object Rook extends PromotableRole {
   else None
   val projection = true
 }
+case object Lance extends PromotableRole {
+  val forsyth = 'l'
+  val dirs: Directions = List(_.up, _.down)
+  def dir(from: Pos, to: Pos) = if (to ?| from) Some(
+    if (to ?^ from) (_.up) else (_.down)
+  )
+  else if (to ?- from) Some(
+    if (to ?< from) (_.left) else (_.right)
+  )
+  else None
+  val projection = true
+}
 case object Bishop extends PromotableRole {
   val forsyth = 'b'
   val dirs: Directions = List(_.upLeft, _.upRight, _.downLeft, _.downRight)
@@ -76,10 +88,16 @@ case object Pawn extends Role {
   def dir(from: Pos, to: Pos) = None
   val projection = false
 }
+case object ShogiPawn extends Role {
+  val forsyth = 's'
+  val dirs: Directions = Nil
+  def dir(from: Pos, to: Pos) = None
+  val projection = false
+}
 
 object Role {
 
-  val all: List[Role] = List(King, Queen, Rook, Bishop, Knight, Pawn)
+  val all: List[Role] = List(King, Queen, Rook, Bishop, Knight, Pawn, Lance, ShogiPawn)
   val allPromotable: List[PromotableRole] = List(Queen, Rook, Bishop, Knight, King)
   val allByForsyth: Map[Char, Role] = all map { r => (r.forsyth, r) } toMap
   val allByPgn: Map[Char, Role] = all map { r => (r.pgn, r) } toMap
